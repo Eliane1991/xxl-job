@@ -2,10 +2,12 @@ package com.xxl.job.admin.core.conf;
 
 import com.xxl.job.admin.core.alarm.JobAlarmer;
 import com.xxl.job.admin.core.scheduler.XxlJobScheduler;
+import com.xxl.job.admin.core.util.ExchangeMailUtil;
 import com.xxl.job.admin.dao.*;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ import java.util.Arrays;
 public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     private static XxlJobAdminConfig adminConfig = null;
+
     public static XxlJobAdminConfig getAdminConfig() {
         return adminConfig;
     }
@@ -55,8 +58,14 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     @Value("${xxl.job.accessToken}")
     private String accessToken;
 
-    @Value("${spring.mail.from}")
-    private String emailFrom;
+    @Value("${spring.mail.host}")
+    private String emailHost;
+    @Value("${spring.mail.username}")
+    private String emailUserName;
+    @Value("${spring.mail.password}")
+    private String emailPw;
+    @Value("${spring.mail.domain}")
+    private String userDomain;
 
     @Value("${xxl.job.triggerpool.fast.max}")
     private int triggerPoolFastMax;
@@ -79,8 +88,7 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     private XxlJobGroupDao xxlJobGroupDao;
     @Resource
     private XxlJobLogReportDao xxlJobLogReportDao;
-    @Resource
-    private JavaMailSender mailSender;
+
     @Resource
     private DataSource dataSource;
     @Resource
@@ -96,10 +104,6 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     public String getAccessToken() {
         return accessToken;
-    }
-
-    public String getEmailFrom() {
-        return emailFrom;
     }
 
     public int getTriggerPoolFastMax() {
@@ -123,6 +127,11 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
         return logretentiondays;
     }
 
+
+    public ExchangeMailUtil getMailSender() {
+        return new ExchangeMailUtil(this.emailHost, this.emailUserName, this.emailPw, this.userDomain);
+    }
+
     public XxlJobLogDao getXxlJobLogDao() {
         return xxlJobLogDao;
     }
@@ -141,10 +150,6 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     public XxlJobLogReportDao getXxlJobLogReportDao() {
         return xxlJobLogReportDao;
-    }
-
-    public JavaMailSender getMailSender() {
-        return mailSender;
     }
 
     public DataSource getDataSource() {

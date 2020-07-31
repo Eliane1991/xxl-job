@@ -62,15 +62,7 @@ public class EmailJobAlarm implements JobAlarm {
 
                 // make mail
                 try {
-                    MimeMessage mimeMessage = XxlJobAdminConfig.getAdminConfig().getMailSender().createMimeMessage();
-
-                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                    helper.setFrom(XxlJobAdminConfig.getAdminConfig().getEmailFrom(), personal);
-                    helper.setTo(email);
-                    helper.setSubject(title);
-                    helper.setText(content, true);
-
-                    XxlJobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
+                    XxlJobAdminConfig.getAdminConfig().getMailSender().send(title,new String[]{email},null,content);
                 } catch (Exception e) {
                     logger.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
 
